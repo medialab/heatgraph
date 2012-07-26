@@ -1,0 +1,66 @@
+
+div.leftPanel{
+	width: 400px;
+	overflow:auto;
+	background-color:#F9F9F0;
+}
+
+
+#progress_bar {
+	margin: 10px 0;
+	padding: 3px;
+	border: 1px solid #000;
+	font-size: 14px;
+	clear: both;
+	opacity: 0;
+	-moz-transition: opacity 1s linear;
+	-o-transition: opacity 1s linear;
+	-webkit-transition: opacity 1s linear;
+}
+#progress_bar.loading {
+	opacity: 1.0;
+}
+#progress_bar_message{
+	background-color: #99ccff;
+	height: auto;
+	width: 0;
+}
+#progress_bar_message.fail_message {
+	background-color: #ffdddd;
+	height: auto;
+	width: 0;
+}
+#progress_bar_message.success_message {
+	background-color: #99ffcc;
+	height: auto;
+	width: 0;
+}
+
+table.structure tr td{
+	padding:5px;
+}
+
+table.cleanTable{
+	font-size: 10px;
+    font-weight: bold;
+    line-height: 1.4em;
+    font-style: normal;
+    border-collapse:separate;
+}
+
+table.cleanTable tbody td, table.cleanTabletbody th{
+	padding:3px;
+    text-align:center;
+    border: 2px solid #EEEEDD;
+    text-shadow:1px 1px 1px #F9F9F0;    
+}
+
+table.cleanTable tbody td{
+	background-color:#F9F9F9;
+    color:#666;
+}
+table.cleanTable tbody th{
+	font-weight:bold;
+    background-color:#F9F9F0;
+    color:#333;
+}

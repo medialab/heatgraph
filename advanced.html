@@ -1,0 +1,237 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<html>
+<head>
+	<title>HeatMaps</title>
+	<link rel="stylesheet" type="text/css" media="all" href="css/reset.css" />
+	<link rel="stylesheet" type="text/css" media="all" href="css/text.css" />
+	<link rel="stylesheet" type="text/css" media="all" href="css/sandbox.css" />
+	
+	<script src="jquery.min.js"></script>
+	<script src="jquery.svg.js"></script>
+	<script src="base64.js"></script>
+	<script src="canvas2image.js"></script>
+	<script src="d3.js"></script>
+	<script src="preview.js"></script>
+	<script src="pixastic.custom.js"></script>
+	<script src="FileSaver.js"></script>
+	<script src="sandbox.js"></script>
+</head>
+<body>
+    <table class="structure"><tr><td><div class="leftPanel">
+	    <h3>Settings</h3>
+		<form id="settings">
+			<table class="cleanTable">
+				<tr>
+					<th></th>
+					<th></th>
+					<th>HeatMap Mode</th>
+					<td>Used<br/>nodes</td>
+					<td>Color</td>
+					<td>Ego</td>
+				</tr>
+				<tr>
+					<td><img src="img/bnw_heatmap.png"/></td>
+					<td><input type="radio" name="viztype" id="bnw_heatmap" checked=true/></td>
+					<td><b>Heatmap</b></td>
+					<td>All (sum)</td>
+					<td>Heat (B&amp;W)</td>
+					<td>Ego subgraph</td>
+				</tr>
+				<tr>
+					<td><img src="img/color_heatmap.png"/></td>
+					<td><input type="radio" name="viztype" id="color_heatmap"/></td>
+					<td><b>HeatMap</b> (colorized)</td>
+					<td>Used<br/>nodes</td>
+					<td>Heat (color)</td>
+					<td>Ego subgraph</td>
+				</tr>
+				<tr>
+					<td><img src="img/overlay_heatmap.png"/></td>
+					<td><input type="radio" name="viztype" id="overlay_heatmap"/></td>
+					<td><b>SpotCloud</b> (Color Heatmap)</td>
+					<td>All (sum)</td>
+					<td>Nodes color (sum)</td>
+					<td>Ego subgraph</td>
+				</tr>
+				<tr>
+					<td><img src="img/monadic.png"/></td>
+					<td><input type="radio" name="viztype" id="monadic"/></td>
+					<td><b>Monadic</b></td>
+					<td>All (sum)</td>
+					<td>Heat (B&amp;W)</td>
+					<td>Point of view</td>
+				</tr>
+				<tr>
+					<td><img src="img/monadic_color.png"/></td>
+					<td><input type="radio" name="viztype" id="monadic_color"/></td>
+					<td><b>Color Monadic</b></td>
+					<td>All (sum)</td>
+					<td>Heat (color)</td>
+					<td>Point of view</td>
+				</tr>
+				<tr>
+					<td><img src="img/topomonadic.png"/></td>
+					<td><input type="radio" name="viztype" id="topomonadic"/></td>
+					<td><b>Topologic Monadic</b></td>
+					<td>All (sum)</td>
+					<td>Heat (B&amp;W)</td>
+					<td>Point of view</td>
+				</tr>
+				<tr>
+					<td><img src="img/topomonadic_color.png"/></td>
+					<td><input type="radio" name="viztype" id="topomonadic_color"/></td>
+					<td><b>Color Topologic Monadic</b></td>
+					<td>All (sum)</td>
+					<td>Heat (color)</td>
+					<td>Point of view</td>
+				</tr>
+				<tr>
+					<td><img src="img/voronoi.png"/></td>
+					<td><input type="radio" name="viztype" id="voronoi"/></td>
+					<td><b>Heat Voronoï</b></td>
+					<td>Heatest node</td>
+					<td>Node color</td>
+					<td>Ego subgraph</td>
+				</tr>
+				<tr>
+					<td><img src="img/weighted_voronoi.png"/></td>
+					<td><input type="radio" name="viztype" id="gradient_voronoi"/></td>
+					<td><b>Gradient Heat Voronoï</b></td>
+					<td>Heat of heatest node</td>
+					<td>Heat (B&amp;W)</td>
+					<td>Ego subgraph</td>
+				</tr>
+				<tr>
+					<td><img src="img/grad_voronoi.png"/></td>
+					<td><input type="radio" name="viztype" id="gradient_voronoi_color"/></td>
+					<td><b>Gradient Heat Voronoï Color</b></td>
+					<td>Heat of heatest node</td>
+					<td>Heat (B&amp;W) + Node color</td>
+					<td>Ego subgraph</td>
+				</tr>
+			</table>
+			<table class="cleanTable">
+				<th>Generic Settings</th>
+				<tr><td>
+					HeatMap Spreading:			<input type="text" id="spreading"		value="3"		style="width:40px;"><br/>
+					<small>(more blurs, less sharpens the heatmap)</small>
+				</td></tr>
+				<tr><td>
+					Weight by node size:		<input type="checkbox" id="weight"	checked='true'><br/>
+				</td></tr>
+				<tr><td>
+					HeatMap Approximation:		<input type="text" id="approximation"	value="0.01"	style="width:40px;"><br/>
+					<small>(0 means full precision. Recommanded under 0.01.)</small>
+				</td></tr>
+				 <tr><td>
+					Intensity Decreasing:		<input type="text" id="intensityDecrease"	value="2"	style="width:40px;"><br/>
+					<small>(Topologic Monadic Only)</small>
+				</td></tr>
+				<tr><td>
+					HeatMap Gradient steps:		<input type="text" id="gradient_steps"	value="5"		style="width:40px;"><br/>
+					<small>(0 is gradient, no steps)</small>
+				</td></tr>
+				<tr><td>
+					Lightness Ratio:			<input type="text" id="lightness_ratio"	value="0.75"	style="width:40px;"><br/>
+					<small>(0.5 makes "dark to color", 1 makes "dark to color to white")<br/>(Voronoï only)</small>
+				</td></tr>
+				<tr><td>
+					Width:						<input type="text" id="canvas_width"	value="40"		style="width:40px;">px,
+					Height:						<input type="text" id="canvas_height"	value="40"		style="width:40px;">px
+				</td></tr>
+				<tr><td>
+					Color Min:						<input type="text" id="color_min" class="control_with_arrows"	value="240"	 	size="3">
+					<div id="color_min_preview" style="width:10px; height:10px; border:1px solid black; display:inline-block;">&nbsp;</div>,
+					Color Max:						<input type="text" id="color_max" class="control_with_arrows"	value="0"		size="3">
+					<div id="color_max_preview" style="width:10px; height:10px; border:1px solid black; display:inline-block;">&nbsp;</div>
+	<!--		        <div id="color_preview_gradient" style="width:250px; height:20px; border:1px solid black;">&nbsp;</div>-->
+				</td></tr>
+				<tr><td>
+					Labels Display Threshold:		<input type="text" id="labelsThreshold"		value="10"	style="width:40px;"><br/>
+					<small>(Labels hidden for nodes sized under the threshold)</small>
+				</td></tr>
+				<script type="text/javascript">
+					$( function () {
+
+					
+					$("#color_min").change( function () { color_min = $("#color_min").attr("value"); $("#color_min_preview").css("background","hsl("+color_min+", 100%, 50%)");  } );
+					$("#color_max").change(  function () { color_max = $("#color_max").attr("value"); $("#color_max_preview").css("background","hsl("+color_max+", 100%, 50%)"); } );
+					
+
+					
+					$("#color_min").change( function () {
+						color_min = $("#color_min").attr("value");
+						color_max = $("#color_max").attr("value");
+						$("#color_preview_gradient").css( { "background" : "-webkit-gradient(linear, left top, right bottom  , from(hsl("+color_min+", 100%, 50%)), to(hsl("+color_max+", 100%, 50%)))" } )
+					}) ;
+					
+					$("#color_max").change( function () {
+						color_min = $("#color_min").attr("value");
+						color_max = $("#color_max").attr("value");
+						$("#color_preview_gradient").css( { "background" : "-webkit-gradient(linear, left top, right bottom  , from(hsl("+color_min+", 100%, 50%)), to(hsl("+color_max+", 100%, 50%)))" } )
+					}) ;
+					
+					$("#color_min").trigger('change');
+					$("#color_max").trigger('change');
+					
+					$(".control_with_arrows").keydown(function(e){
+
+						if (e.keyCode == 38) { // up 
+							$(this).attr("value", parseInt($(this).attr("value")) + 1)
+							$(this).trigger('change');
+							e.preventDefault();
+						}
+
+					});
+					$(".control_with_arrows").keydown(function(e){
+
+						if (e.keyCode == 40) { // down
+							$(this).attr("value", parseInt($(this).attr("value")) - 1)
+							$(this).trigger('change');
+							e.preventDefault();
+						}
+					});
+					
+					});
+				</script>
+			</table>
+			<b>Graph Source File</b><br/>
+			<input type="file" id="files" name="file" /><br/>
+			<div id="progress_bar"><div id="progress_bar_message" class="percent">0%</div></div>
+			<script>
+				document.getElementById('files').addEventListener('change', preview.handleFileSelect, false);
+			</script>
+		</form>
+    </div></td>
+    <td>
+	    <h3>HeatMap</h3>
+		<table><tr>
+			<td>
+				<select id="egoSelectMenu">
+					<option>Ego Mode: Select a Node...</option>
+				</select>
+			</td><td>
+			<td>
+				<select id="outputFormat">
+					<option>PNG</option>
+					<option selected=true>SVG</option>
+				</select>
+			</td><td>
+				<button id="render">Render!</button>
+			</td><td>
+				<div id="draw_progress" style="width:100px;"></div>
+			</td><td>
+				<input type="button" id="save" value="Download">
+			</td>
+		</tr></table>
+		x <input type="text" id="pixelsSize"	value="10"	style="width:40px;"> Resolution (pixel zoom)
+		<br/>
+		<button onclick="filter_blur()">Blur</button>
+		<button onclick="filter_posterize()">Posterize</button>
+		<button onclick="drawEdges()">Edges</button>
+		<button onclick="drawNodes()">Nodes</button>
+		<button onclick="drawLabels()">Labels</button>
+		<div id="drawspace"></div>
+    </td></tr></table>
+</body>
+</html>
