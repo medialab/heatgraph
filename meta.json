@@ -1,9 +1,9 @@
 {
   "name": "HeatGraph",
   "authors": ["Mathieu Jacomy"],
-  "url": "http://lab.medialab.sciences-po.fr/heatgraph/",
+  "url": "http://tools.medialab.sciences-po.fr/heatgraph/",
   "source": "https://github.com/medialab/heatgraph",
   "licence": "TBD",
-  "visual": "/heatgraph/img/overlay_heatmap.png",
-  "description": "Heatgraph is ..."
+  "visual": "/heatgraph/img/visual.jpg",
+  "description": "Visualize densities on spatialized networks. Get a global heatmap or a heatmap of the neighborhood of a given node."
 }
